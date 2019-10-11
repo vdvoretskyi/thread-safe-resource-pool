@@ -63,3 +63,4 @@ Test:
 2. Try to use multiple threads with sleep.
 3. Possible approach: Try to use many threads that perform operations on same pool with single resource
 trying to catch any exceptions.
+4. Loading testing. Resource pool with a lot of resources. Monitor deadlocks, log.

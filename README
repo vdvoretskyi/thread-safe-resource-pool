@@ -1,0 +1,32 @@
+1. The main structure that was used is LinkedBlockingQueue (from JDK). BlockingQueue itself provides
+needed functionality to implement acquire and release methods and also guarantees thread safety.
+LinkedBlockingQueue because pool is unbounded.
+
+Complexity to remove resource from pool is O(n).
+
+2. For sync acquire method with remove/close it's needed to have a separate lock for each resource.
+CountDownLatch provides required semantic and has simple API. ConcurrentHashMap guarantees thread
+safety.
+
+O(1) complexity to get lock to particular resource.
+
+3. Pool doesn't provide reopening possibility. Since it provides closeNow method
+that requires additional effort to release all previous resources and move to the consistent state
+before pool could be reopen.
+
+Improvements:
+
+1. Pool could provide reopening functionality.
+2. On open it's possible to fill out pool with some of resources preliminary.
+3. closeNow could be improved and do clean job on background thread (if needed).
+4. Adding same resource multiple times is possible now.
+5. We don't control that resource could be used event after release it.
+6. There's a possibility to return false on remove even if resource has been released (it could be
+acquired again by other thread). but it returns false according to spec.
+
+Test:
+
+1. Check functional correctness in single thread.
+2. Try to use multiple threads with sleep.
+3. Possible approach: Try to use many threads that perform operations on same pool with single resource
+trying to catch any exceptions.
